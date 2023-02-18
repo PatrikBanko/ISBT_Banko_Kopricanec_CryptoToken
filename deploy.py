@@ -33,7 +33,7 @@ abi = json.loads(compiled_sol["contracts"]["IPToken.sol"]["IPToken"]["metadata"]
 # Spajanje na Ganache testnu mrezu
 w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
 chain_id = 1337
-address_owner = "0xa1b561eaa185c747e601E5A032DD46fcA1AC2A44"
+adresa_vlasnika = "0xa1b561eaa185c747e601E5A032DD46fcA1AC2A44"
 private_key = "0x92d3a1e43adda3618918ba7980ed691789ac0fb9f7663a7d02d9a57e6ed7f60f"
 
 acc = Account.from_key(private_key)
@@ -42,19 +42,18 @@ print("racun: ", acc.address)
 # Kreiranje ugovora
 IPToken = w3.eth.contract(abi=abi, bytecode=bytecode)
 # Generiranje nonce
-nonce = w3.eth.getTransactionCount(address_owner)
+nonce = w3.eth.getTransactionCount(adresa_vlasnika)
 
-# Kreiranje transakcije
-naziv = "Ivana Patrik Token"
-kratica = "IPT"
-ukupanOpticaj = 500000
+# Definiranje detalja o tokenu i kreiranje transakcije
+naziv = input("\n\nNaziv tokena: ")
+kratica = input("Kratica: ")
+ukupanOpticajPy = int(input("Ukupni opticaj: "))
 
 
-transaction = IPToken.constructor(ukupanOpticaj).buildTransaction(
+transaction = IPToken.constructor(ukupanOpticajPy).buildTransaction(
     {
         "chainId": chain_id,
-        # "gasPrice": w3.eth.gas_price,
-        "from": address_owner,
+        "from": adresa_vlasnika,
         "nonce": nonce,
     }
 )
@@ -76,10 +75,51 @@ iptoken = w3.eth.contract(address=transaction_receipt.contractAddress, abi=abi)
 # Pregled ukupnog opticaja, stanja na racunu vlasnika, imena tokena, kratice tokena, stanja na drugom racunu
 print("\n\nNaziv tokena: ", naziv)
 print("Kratica tokena: ", kratica)
-print("Ukupan opticaj: {} tokena".format(ukupanOpticaj))
-print("Stanje racuna vlasnika: ", iptoken.functions.provjeriStanje(address_owner).call())
-# print("Stanje racuna vlasnika: ", web3.eth.get_balance(address_owner))
+print("Ukupan opticaj: {} tokena".format(iptoken.functions.ukupanOpticaj().call()))
+print("Stanje racuna vlasnika: {}\n".format(iptoken.functions.provjeriStanje(adresa_vlasnika).call()))
+# print("Stanje racuna vlasnika: ", web3.eth.get_balance(adresa_vlasnika))
 
 # Testiranje funkcija mint i burn
-kolicina_mint = 100000
-kolicina_burn = 300000
+# Mint
+kolicina_mint = int(input("Unesite količinu za mint: "))
+
+print("\n_______MINT_____________________________________")
+print("Ukupan opticaj prije mint-anja: {}".format(iptoken.functions.ukupanOpticaj().call()))
+print("Mint u iznosu od {} tokena u tijeku...".format(kolicina_mint))
+iptoken.functions.mint(kolicina_mint).transact({"from": adresa_vlasnika})
+print("Ukupan opticaj poslije mint-anja: {}".format(iptoken.functions.ukupanOpticaj().call()))
+print("________________________________________________\n")
+
+# Burn
+kolicina_burn = int(input("Unesite količinu za burn: "))
+
+print("\n_______BURN_____________________________________")
+print("Ukupan opticaj prije burn-anja: {}".format(iptoken.functions.ukupanOpticaj().call()))
+print("Mint u iznosu od {} tokena u tijeku...".format(kolicina_burn))
+iptoken.functions.burn(kolicina_burn).transact({"from": adresa_vlasnika})
+print("Ukupan opticaj poslije burn-anja: {}".format(iptoken.functions.ukupanOpticaj().call()))
+print("________________________________________________\n")
+
+# Testiranje izvršavanja transakcija
+adresa_drugog_korisnika = "0x869381E27274Aa9A18E028fB74E98E12C052C08B"
+private_key_2 = "0xf05e86e57eff25b29ec32ccf0d3cd86f349389337dfe0b4624c1079b18029883"
+
+print("\n_______TRANSAKCIJA______________________________")
+print("Stanje računa vlasnika prije transakcije: {}".format(iptoken.functions.provjeriStanje(adresa_vlasnika).call()))
+print(
+    "Stanje računa drugog korisnika prije transakcije: {}\n".format(
+        iptoken.functions.provjeriStanje(adresa_drugog_korisnika).call()
+    )
+)
+kolicina_transfer = int(input("Unesite kolićinu koja će se poslati: "))
+print("\nTransakcija u tijeku...\n")
+iptoken.functions.transferFrom(adresa_vlasnika, adresa_drugog_korisnika, kolicina_transfer).transact(
+    {"from": adresa_vlasnika}
+)
+print("Stanje računa vlasnika nakon transakcije: {}".format(iptoken.functions.provjeriStanje(adresa_vlasnika).call()))
+print(
+    "Stanje računa drugog korisnika nakon transakcije: {}".format(
+        iptoken.functions.provjeriStanje(adresa_drugog_korisnika).call()
+    )
+)
+print("________________________________________________\n")
