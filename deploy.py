@@ -31,10 +31,10 @@ bytecode = compiled_sol["contracts"]["IPToken.sol"]["IPToken"]["evm"]["bytecode"
 abi = json.loads(compiled_sol["contracts"]["IPToken.sol"]["IPToken"]["metadata"])["output"]["abi"]
 
 # Spajanje na Ganache testnu mrezu
-w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+w3 = Web3(Web3.HTTPProvider("http://localhost:8545"))
 chain_id = 1337
-adresa_vlasnika = "0xa1b561eaa185c747e601E5A032DD46fcA1AC2A44"
-private_key = "0x92d3a1e43adda3618918ba7980ed691789ac0fb9f7663a7d02d9a57e6ed7f60f"
+adresa_vlasnika = "0x84C2729a491BeC0192136d4B5a9C46526eC281A5"
+private_key = "0x93f8129058978fe554ad09339028c7cd8532c082da340cb824e9401a641a3a6a"
 
 acc = Account.from_key(private_key)
 print("racun: ", acc.address)
@@ -101,8 +101,8 @@ print("Ukupan opticaj poslije burn-anja: {}".format(iptoken.functions.ukupanOpti
 print("________________________________________________\n")
 
 # Testiranje izvršavanja transakcija
-adresa_drugog_korisnika = "0x869381E27274Aa9A18E028fB74E98E12C052C08B"
-private_key_2 = "0xf05e86e57eff25b29ec32ccf0d3cd86f349389337dfe0b4624c1079b18029883"
+adresa_drugog_korisnika = "0xc9676219facEfcd7D24bcE412c4dF23a052eA677"
+private_key_2 = "0x8ef5ac4abca9efde980dd6ff40fec7b3c6efa975ed8443cc65e5b733086fa5b9"
 
 print("\n_______TRANSAKCIJA______________________________")
 print("Stanje računa vlasnika prije transakcije: {}".format(iptoken.functions.provjeriStanje(adresa_vlasnika).call()))
