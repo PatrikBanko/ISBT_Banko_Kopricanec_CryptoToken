@@ -10,8 +10,6 @@ from eth_account import Account
 with open("./IPToken.sol", "r") as file:
     IPT_file = file.read()
 
-# print(IPT_file)
-
 solcx.install_solc("0.8.0")
 compiled_sol = compile_standard(
     {
@@ -33,8 +31,8 @@ abi = json.loads(compiled_sol["contracts"]["IPToken.sol"]["IPToken"]["metadata"]
 # Spajanje na Ganache testnu mrezu
 w3 = Web3(Web3.HTTPProvider("http://localhost:8545"))
 chain_id = 1337
-adresa_vlasnika = "0x84C2729a491BeC0192136d4B5a9C46526eC281A5"
-private_key = "0x93f8129058978fe554ad09339028c7cd8532c082da340cb824e9401a641a3a6a"
+adresa_vlasnika = "0x1e5EdDe72f55f8205C1D0f83Ce3E065536125d63"
+private_key = "0x3b62e3dfe5cfdc9e3ba987b50f4a1d1da884525bb433e14cb0aba403e7a55ce0"
 
 acc = Account.from_key(private_key)
 print("racun: ", acc.address)
@@ -77,7 +75,6 @@ print("\n\nNaziv tokena: ", naziv)
 print("Kratica tokena: ", kratica)
 print("Ukupan opticaj: {} tokena".format(iptoken.functions.ukupanOpticaj().call()))
 print("Stanje racuna vlasnika: {}\n".format(iptoken.functions.provjeriStanje(adresa_vlasnika).call()))
-# print("Stanje racuna vlasnika: ", web3.eth.get_balance(adresa_vlasnika))
 
 # Testiranje funkcija mint i burn
 # Mint
@@ -101,8 +98,8 @@ print("Ukupan opticaj poslije burn-anja: {}".format(iptoken.functions.ukupanOpti
 print("________________________________________________\n")
 
 # Testiranje izvršavanja transakcija
-adresa_drugog_korisnika = "0xc9676219facEfcd7D24bcE412c4dF23a052eA677"
-private_key_2 = "0x8ef5ac4abca9efde980dd6ff40fec7b3c6efa975ed8443cc65e5b733086fa5b9"
+adresa_drugog_korisnika = "0x1c6965C4B76Cd098ffD455edB087b30fD1116b1b"
+private_key_2 = "0x46fa602f2e012dfc7d139e48c06b9d85850aede6928464196c61b20b10ffefe7"
 
 print("\n_______TRANSAKCIJA______________________________")
 print("Stanje računa vlasnika prije transakcije: {}".format(iptoken.functions.provjeriStanje(adresa_vlasnika).call()))
